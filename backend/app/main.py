@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import account_router, trade_router, stock_router
+from app.api import account_router, trade_router, stock_router, prediction_router, review_router
 from app.database import engine, Base
 
 # 创建数据库表
@@ -9,8 +9,8 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="股票交易系统",
-    description="模拟炒股系统API",
-    version="1.0.0"
+    description="模拟炒股系统API，包含预测和复盘功能",
+    version="2.0.0"
 )
 
 # 配置CORS
@@ -26,11 +26,13 @@ app.add_middleware(
 app.include_router(account_router)
 app.include_router(trade_router)
 app.include_router(stock_router)
+app.include_router(prediction_router)
+app.include_router(review_router)
 
 
 @app.get("/")
 def root():
-    return {"message": "股票交易系统 API"}
+    return {"message": "股票交易系统 API v2.0"}
 
 
 @app.get("/health")
