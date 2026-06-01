@@ -8,6 +8,14 @@ import type {
   StockHistory,
   KLineData,
   TradeCreate,
+  PredictionSignal,
+  ModelPerformance,
+  Prediction,
+  DailyReviewSummary,
+  WeeklyReviewSummary,
+  StrategyAnalysis,
+  BehaviorAnalysis,
+  ComprehensiveReview,
 } from '../types';
 
 const api = axios.create({
@@ -71,6 +79,56 @@ export const stockApi = {
   search: (keyword: string) =>
     api.get<Array<{ stock_code: string; stock_name: string }>>('/api/stocks/search', {
       params: { keyword },
+    }),
+};
+
+// 预测API
+export const predictionApi = {
+  train: (stockCode: string, days: number = 180) =>
+    api.post(`/api/predictions/train/${stockCode}`, null, { params: { days } }),
+
+  getSignal: (stockCode: string) =>
+    api.get<PredictionSignal>(`/api/predictions/signal/${stockCode}`),
+
+  getMultipleSignals: (stockCodes: string[]) =>
+    api.get<PredictionSignal[]>('/api/predictions/signals', {
+      params: { stock_codes: stockCodes.join(',') },
+    }),
+
+  getPerformance: (modelType: string = 'LSTM') =>
+    api.get<ModelPerformance>('/api/predictions/performance', {
+      params: { model_type: modelType },
+    }),
+
+  getHistory: (stockCode: string, limit: number = 30) =>
+    api.get<Prediction[]>('/api/predictions/history', {
+      params: { stock_code: stockCode, limit },
+    }),
+};
+
+// 复盘API
+export const reviewApi = {
+  generate: (userId: number) =>
+    api.post(`/api/reviews/generate/${userId}`),
+
+  getDailySummary: (userId: number) =>
+    api.get<DailyReviewSummary>(`/api/reviews/daily/${userId}`),
+
+  getWeeklySummary: (userId: number) =>
+    api.get<WeeklyReviewSummary>(`/api/reviews/weekly/${userId}`),
+
+  getStrategyAnalysis: (userId: number) =>
+    api.get<StrategyAnalysis[]>(`/api/reviews/strategies/${userId}`),
+
+  getBehaviorAnalysis: (userId: number) =>
+    api.get<BehaviorAnalysis>(`/api/reviews/behavior/${userId}`),
+
+  getComprehensiveReview: (userId: number) =>
+    api.get<ComprehensiveReview>(`/api/reviews/comprehensive/${userId}`),
+
+  updateNotes: (reviewId: number, userId: number, notes: string, lessons: string) =>
+    api.put(`/api/reviews/notes/${reviewId}`, null, {
+      params: { user_id: userId, notes, lessons },
     }),
 };
 

@@ -2,6 +2,8 @@ import { Routes, Route } from 'react-router-dom';
 import { Layout } from 'antd';
 import Dashboard from './pages/Dashboard';
 import Trade from './pages/Trade';
+import Prediction from './pages/Prediction';
+import Review from './pages/Review';
 
 const { Header, Content } = Layout;
 
@@ -15,6 +17,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/trade" element={<Trade />} />
+          <Route path="/prediction" element={<Prediction />} />
+          <Route path="/review" element={<Review />} />
         </Routes>
       </Content>
     </Layout>

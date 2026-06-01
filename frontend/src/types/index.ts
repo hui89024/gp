@@ -79,3 +79,82 @@ export interface TradeCreate {
   quantity: number;
   strategy_tag?: string;
 }
+
+export interface PredictionSignal {
+  stock_code: string;
+  stock_name: string;
+  current_price: number;
+  predicted_direction: 'UP' | 'DOWN';
+  predicted_price: number;
+  confidence: number;
+  signal_strength: 'STRONG' | 'MEDIUM' | 'WEAK';
+  model_type: string;
+  prediction_date: string;
+}
+
+export interface ModelPerformance {
+  model_type: string;
+  total_predictions: number;
+  correct_predictions: number;
+  accuracy: number;
+  avg_confidence: number;
+}
+
+export interface DailyReviewSummary {
+  date: string;
+  total_trades: number;
+  winning_trades: number;
+  total_pnl: number;
+  win_rate: number;
+}
+
+export interface WeeklyReviewSummary {
+  week_start: string;
+  week_end: string;
+  total_trades: number;
+  total_pnl: number;
+  win_rate: number;
+  best_trade: any;
+  worst_trade: any;
+  daily_summaries: DailyReviewSummary[];
+}
+
+export interface StrategyAnalysis {
+  strategy_tag: string;
+  total_trades: number;
+  winning_trades: number;
+  total_pnl: number;
+  win_rate: number;
+  avg_pnl_per_trade: number;
+  profit_loss_ratio: number;
+}
+
+export interface BehaviorAnalysis {
+  avg_holding_days: number;
+  max_position_size: number;
+  trade_frequency: number;
+  emotional_trades: number;
+  overtrading_days: number;
+}
+
+export interface ComprehensiveReview {
+  daily_summary: DailyReviewSummary;
+  weekly_summary: WeeklyReviewSummary | null;
+  strategy_analysis: StrategyAnalysis[];
+  behavior_analysis: BehaviorAnalysis;
+  recommendations: string[];
+}
+
+export interface Prediction {
+  id: number;
+  stock_code: string;
+  model_type: string;
+  predicted_direction: string;
+  predicted_price: number;
+  confidence: number;
+  actual_result: string | null;
+  actual_price: number | null;
+  prediction_date: string;
+  target_date: string;
+  created_at: string;
+}
