@@ -5,7 +5,12 @@ from sqlalchemy.orm import Session
 from app.models.prediction import Prediction
 from app.schemas.prediction import PredictionSignal, ModelPerformance
 from app.services.data_service import DataService
-from app.ml.lstm_model import StockPredictor
+
+
+def _get_stock_predictor():
+    """延迟导入 StockPredictor（依赖 torch）"""
+    from app.ml.lstm_model import StockPredictor
+    return StockPredictor
 
 
 class PredictionService:
@@ -16,9 +21,10 @@ class PredictionService:
         self.data_service = DataService()
         self.predictors = {}
 
-    def get_or_create_predictor(self, stock_code: str) -> StockPredictor:
+    def get_or_create_predictor(self, stock_code: str):
         """获取或创建预测器"""
         if stock_code not in self.predictors:
+            StockPredictor = _get_stock_predictor()
             self.predictors[stock_code] = StockPredictor()
         return self.predictors[stock_code]
 
