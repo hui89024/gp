@@ -1,39 +1,62 @@
-import { Card, Form, Input, InputNumber, Button, Select } from 'antd';
+import { useState, useEffect } from 'react';
+import { Row, Col, message } from 'antd';
+import TradeForm from '../components/TradeForm';
+import PositionList from '../components/PositionList';
+import StockChart from '../components/StockChart';
+import { useTradeStore } from '../stores/tradeStore';
 
-function Trade() {
+export default function Trade() {
+  const {
+    userId,
+    positions,
+    loading,
+    error,
+    setUserId,
+    buyStock,
+    sellStock,
+  } = useTradeStore();
+
+  useEffect(() => {
+    if (!userId) {
+      setUserId(1);
+    }
+  }, [userId, setUserId]);
+
+  useEffect(() => {
+    if (error) {
+      message.error(error);
+    }
+  }, [error]);
+
+  const [selectedStock, setSelectedStock] = useState<string>('000001');
+
+  const handleBuy = async (stockCode: string, stockName: string, price: number, quantity: number) => {
+    return await buyStock(stockCode, stockName, price, quantity);
+  };
+
+  const handleSell = async (stockCode: string, stockName: string, price: number, quantity: number) => {
+    return await sellStock(stockCode, stockName, price, quantity);
+  };
+
   return (
-    <div>
-      <h2>交易下单</h2>
-      <Card>
-        <Form layout="vertical">
-          <Form.Item label="股票代码" name="stock_code" rules={[{ required: true }]}>
-            <Input placeholder="请输入股票代码" />
-          </Form.Item>
-          <Form.Item label="股票名称" name="stock_name" rules={[{ required: true }]}>
-            <Input placeholder="请输入股票名称" />
-          </Form.Item>
-          <Form.Item label="交易类型" name="trade_type" rules={[{ required: true }]}>
-            <Select placeholder="请选择交易类型">
-              <Select.Option value="BUY">买入</Select.Option>
-              <Select.Option value="SELL">卖出</Select.Option>
-            </Select>
-          </Form.Item>
-          <Form.Item label="价格" name="price" rules={[{ required: true }]}>
-            <InputNumber min={0} precision={2} placeholder="请输入价格" style={{ width: '100%' }} />
-          </Form.Item>
-          <Form.Item label="数量" name="quantity" rules={[{ required: true }]}>
-            <InputNumber min={100} step={100} placeholder="请输入数量" style={{ width: '100%' }} />
-          </Form.Item>
-          <Form.Item label="策略标签" name="strategy_tag">
-            <Input placeholder="可选策略标签" />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" block>提交订单</Button>
-          </Form.Item>
-        </Form>
-      </Card>
-    </div>
+    <Row gutter={16}>
+      <Col span={8}>
+        <TradeForm
+          onBuy={handleBuy}
+          onSell={handleSell}
+          loading={loading}
+        />
+      </Col>
+      <Col span={16}>
+        <StockChart stockCode={selectedStock} />
+        <div style={{ marginTop: 16 }}>
+          <PositionList
+            positions={positions}
+            loading={loading}
+            onSelect={(position) => setSelectedStock(position.stock_code)}
+          />
+        </div>
+      </Col>
+    </Row>
   );
 }
-
-export default Trade;

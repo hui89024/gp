@@ -1,33 +1,44 @@
-import { Card, Row, Col, Statistic } from 'antd';
+import { useState, useEffect } from 'react';
+import { Row, Col } from 'antd';
+import AccountOverviewComponent from '../components/AccountOverview';
+import PositionList from '../components/PositionList';
+import StockChart from '../components/StockChart';
+import { useTradeStore } from '../stores/tradeStore';
 
-function Dashboard() {
+export default function Dashboard() {
+  const {
+    userId,
+    overview,
+    positions,
+    loading,
+    setUserId,
+  } = useTradeStore();
+
+  useEffect(() => {
+    // 临时使用固定用户ID，实际应从登录获取
+    if (!userId) {
+      setUserId(1);
+    }
+  }, [userId, setUserId]);
+
+  const [selectedStock, setSelectedStock] = useState<string>('000001');
+
   return (
     <div>
-      <h2>账户概览</h2>
-      <Row gutter={16}>
-        <Col span={6}>
-          <Card>
-            <Statistic title="总资产" value={0} precision={2} prefix="¥" />
-          </Card>
+      <AccountOverviewComponent overview={overview} loading={loading} />
+
+      <Row gutter={16} style={{ marginTop: 16 }}>
+        <Col span={16}>
+          <StockChart stockCode={selectedStock} />
         </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic title="可用资金" value={0} precision={2} prefix="¥" />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic title="持仓市值" value={0} precision={2} prefix="¥" />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic title="总盈亏" value={0} precision={2} prefix="¥" />
-          </Card>
+        <Col span={8}>
+          <PositionList
+            positions={positions}
+            loading={loading}
+            onSelect={(position) => setSelectedStock(position.stock_code)}
+          />
         </Col>
       </Row>
     </div>
   );
 }
-
-export default Dashboard;
