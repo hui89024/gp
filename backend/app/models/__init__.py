@@ -3,5 +3,12 @@ from app.models.position import Position
 from app.models.trade import Trade
 from app.models.prediction import Prediction
 from app.models.review import Review, StrategyPerformance
+from app.models.strategy_config import StrategyConfig
+from app.models.auto_trade_task import AutoTradeTask
+from app.models.risk_config import RiskConfig
+from app.models.auto_trade_log import AutoTradeLog
 
-__all__ = ["User", "Position", "Trade", "Prediction", "Review", "StrategyPerformance"]
+__all__ = [
+    "User", "Position", "Trade", "Prediction", "Review", "StrategyPerformance",
+    "StrategyConfig", "AutoTradeTask", "RiskConfig", "AutoTradeLog"
+]

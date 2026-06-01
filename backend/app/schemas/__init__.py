@@ -6,6 +6,13 @@ from app.schemas.review import (
     ReviewCreate, ReviewResponse, DailyReviewSummary,
     WeeklyReviewSummary, StrategyAnalysis, BehaviorAnalysis, ComprehensiveReview
 )
+from app.schemas.auto_trading import (
+    StrategyConfigCreate, StrategyConfigUpdate, StrategyConfigResponse,
+    AutoTradeTaskCreate, AutoTradeTaskUpdate, AutoTradeTaskResponse,
+    RiskConfigCreate, RiskConfigUpdate, RiskConfigResponse,
+    AutoTradeLogCreate, AutoTradeLogResponse,
+    TradeSignal, RiskCheckResult
+)
 
 __all__ = [
     "UserCreate", "UserResponse", "AccountOverview",
@@ -13,5 +20,10 @@ __all__ = [
     "StockQuote", "StockHistory", "StockSearchResult", "KLineData",
     "PredictionCreate", "PredictionResponse", "PredictionSignal", "ModelPerformance",
     "ReviewCreate", "ReviewResponse", "DailyReviewSummary",
-    "WeeklyReviewSummary", "StrategyAnalysis", "BehaviorAnalysis", "ComprehensiveReview"
+    "WeeklyReviewSummary", "StrategyAnalysis", "BehaviorAnalysis", "ComprehensiveReview",
+    "StrategyConfigCreate", "StrategyConfigUpdate", "StrategyConfigResponse",
+    "AutoTradeTaskCreate", "AutoTradeTaskUpdate", "AutoTradeTaskResponse",
+    "RiskConfigCreate", "RiskConfigUpdate", "RiskConfigResponse",
+    "AutoTradeLogCreate", "AutoTradeLogResponse",
+    "TradeSignal", "RiskCheckResult"
 ]
