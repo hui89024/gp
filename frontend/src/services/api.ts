@@ -16,6 +16,12 @@ import type {
   StrategyAnalysis,
   BehaviorAnalysis,
   ComprehensiveReview,
+  StrategyConfig,
+  AutoTradeTask,
+  RiskConfig,
+  AutoTradeLog,
+  AutoTradingStatus,
+  AutoTradingStatistics,
 } from '../types';
 
 const api = axios.create({
@@ -130,6 +136,48 @@ export const reviewApi = {
     api.put(`/api/reviews/notes/${reviewId}`, null, {
       params: { user_id: userId, notes, lessons },
     }),
+};
+
+// 自动交易API
+export const autoTradingApi = {
+  createStrategy: (userId: number, data: { strategy_name: string; strategy_type: string; config: Record<string, any> }) =>
+    api.post<StrategyConfig>('/api/auto-trading/strategies', data, { params: { user_id: userId } }),
+
+  getStrategies: (userId: number) =>
+    api.get<StrategyConfig[]>('/api/auto-trading/strategies', { params: { user_id: userId } }),
+
+  updateStrategy: (strategyId: number, userId: number, data: Partial<StrategyConfig>) =>
+    api.put<StrategyConfig>(`/api/auto-trading/strategies/${strategyId}`, data, { params: { user_id: userId } }),
+
+  deleteStrategy: (strategyId: number, userId: number) =>
+    api.delete(`/api/auto-trading/strategies/${strategyId}`, { params: { user_id: userId } }),
+
+  createTask: (userId: number, data: { execution_mode: string; interval_minutes?: number; watchlist: string[] }) =>
+    api.post<AutoTradeTask>('/api/auto-trading/tasks', data, { params: { user_id: userId } }),
+
+  getTasks: (userId: number) =>
+    api.get<AutoTradeTask[]>('/api/auto-trading/tasks', { params: { user_id: userId } }),
+
+  startTask: (taskId: number, userId: number) =>
+    api.post(`/api/auto-trading/tasks/${taskId}/start`, null, { params: { user_id: userId } }),
+
+  stopTask: (taskId: number, userId: number) =>
+    api.post(`/api/auto-trading/tasks/${taskId}/stop`, null, { params: { user_id: userId } }),
+
+  getRiskConfig: (userId: number) =>
+    api.get<RiskConfig>('/api/auto-trading/risk-config', { params: { user_id: userId } }),
+
+  updateRiskConfig: (userId: number, data: Partial<RiskConfig>) =>
+    api.put<RiskConfig>('/api/auto-trading/risk-config', data, { params: { user_id: userId } }),
+
+  getStatus: (userId: number) =>
+    api.get<AutoTradingStatus>('/api/auto-trading/status', { params: { user_id: userId } }),
+
+  getStatistics: (userId: number) =>
+    api.get<AutoTradingStatistics>('/api/auto-trading/statistics', { params: { user_id: userId } }),
+
+  getLogs: (userId: number, limit: number = 50) =>
+    api.get<AutoTradeLog[]>('/api/auto-trading/logs', { params: { user_id: userId, limit } }),
 };
 
 export default api;

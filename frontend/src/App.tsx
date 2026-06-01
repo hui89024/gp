@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard';
 import Trade from './pages/Trade';
 import Prediction from './pages/Prediction';
 import Review from './pages/Review';
+import AutoTrading from './pages/AutoTrading';
 
 const { Header, Content } = Layout;
 
@@ -19,6 +20,7 @@ function App() {
           <Route path="/trade" element={<Trade />} />
           <Route path="/prediction" element={<Prediction />} />
           <Route path="/review" element={<Review />} />
+          <Route path="/auto-trading" element={<AutoTrading />} />
         </Routes>
       </Content>
     </Layout>

@@ -158,3 +158,76 @@ export interface Prediction {
   target_date: string;
   created_at: string;
 }
+
+// 自动交易相关类型
+export interface StrategyConfig {
+  id: number;
+  user_id: number;
+  strategy_name: string;
+  strategy_type: 'PREDICTION' | 'MA' | 'RSI' | 'RULE';
+  config: Record<string, any>;
+  enabled: boolean;
+  created_at: string;
+  updated_at: string | null;
+}
+
+export interface AutoTradeTask {
+  id: number;
+  user_id: number;
+  execution_mode: 'POLLING' | 'REALTIME' | 'BATCH';
+  interval_minutes: number | null;
+  watchlist: string[];
+  enabled: boolean;
+  last_run_at: string | null;
+  created_at: string;
+}
+
+export interface RiskConfig {
+  id: number;
+  user_id: number;
+  stop_loss_pct: number;
+  take_profit_pct: number;
+  max_position_pct: number;
+  max_total_position_pct: number;
+  max_daily_trades: number;
+  max_weekly_trades: number;
+  max_daily_loss: number;
+  max_single_trade: number;
+}
+
+export interface AutoTradeLog {
+  id: number;
+  user_id: number;
+  task_id: number | null;
+  signal_source: string | null;
+  stock_code: string | null;
+  stock_name: string | null;
+  direction: string | null;
+  price: number | null;
+  quantity: number | null;
+  confidence: number | null;
+  risk_check_passed: boolean | null;
+  risk_check_reason: string | null;
+  execution_result: string | null;
+  error_message: string | null;
+  created_at: string;
+}
+
+export interface AutoTradingStatus {
+  running: boolean;
+  active_tasks: number;
+  active_strategies: number;
+  today_trades: number;
+  today_pnl: number;
+}
+
+export interface AutoTradingStatistics {
+  total_trades: number;
+  winning_trades: number;
+  losing_trades: number;
+  win_rate: number;
+  total_pnl: number;
+  avg_pnl_per_trade: number;
+  max_win: number;
+  max_loss: number;
+}
