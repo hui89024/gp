@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Card, Form, Input, Select, Switch, Button, InputNumber, Space, message } from 'antd';
+import { Card, Form, Input, Select, Switch, Button, Space, message } from 'antd';
 import type { StrategyConfig } from '../types';
 import { autoTradingApi } from '../services/api';
 

@@ -4,8 +4,6 @@ import {
   PlusOutlined,
   PlayCircleOutlined,
   PauseCircleOutlined,
-  DeleteOutlined,
-  SettingOutlined,
 } from '@ant-design/icons';
 import type { StrategyConfig, AutoTradeTask } from '../types';
 import { autoTradingApi } from '../services/api';

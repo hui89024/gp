@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Card, Form, InputNumber, Button, Row, Col, Divider, message, Spin } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
-import type { RiskConfig } from '../types';
 import { autoTradingApi } from '../services/api';
 
 interface Props {
@@ -12,14 +11,12 @@ export default function RiskConfigForm({ userId }: Props) {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [configId, setConfigId] = useState<number | null>(null);
 
   const fetchConfig = async () => {
     setLoading(true);
     try {
       const res = await autoTradingApi.getRiskConfig(userId);
       const config = res.data;
-      setConfigId(config.id);
       form.setFieldsValue({
         stop_loss_pct: config.stop_loss_pct,
         take_profit_pct: config.take_profit_pct,
