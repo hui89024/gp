@@ -32,10 +32,22 @@ def get_prediction_signal(
 ):
     """获取预测信号"""
     service = PredictionService(db)
+
+    # 前置检查：实时行情
+    quote = service.data_service.get_stock_quote(stock_code)
+    if not quote:
+        raise HTTPException(
+            status_code=404,
+            detail=f"无法获取{stock_code}的实时行情，请检查股票代码是否正确或数据源是否可用"
+        )
+
     signal = service.predict(stock_code)
 
     if not signal:
-        raise HTTPException(status_code=404, detail="无法生成预测信号，请先训练模型")
+        raise HTTPException(
+            status_code=404,
+            detail=f"无法生成{stock_code}的预测信号，历史数据可能不足，请先训练模型"
+        )
 
     return signal
 

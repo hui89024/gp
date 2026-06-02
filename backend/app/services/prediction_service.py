@@ -32,6 +32,9 @@ class PredictionService:
         """训练预测模型"""
         history = self.data_service.get_stock_history(stock_code, days)
 
+        if not history:
+            return {"success": False, "message": f"无法获取{stock_code}的历史数据，请检查数据源是否可用"}
+
         if len(history) < 40:
             return {"success": False, "message": f"历史数据不足: {len(history)}条，需要至少40条"}
 
@@ -47,10 +50,12 @@ class PredictionService:
         """生成预测信号"""
         quote = self.data_service.get_stock_quote(stock_code)
         if not quote:
+            print(f"[PredictionService] 无法获取{stock_code}的实时行情")
             return None
 
         history = self.data_service.get_stock_history(stock_code, 60)
         if len(history) < 30:
+            print(f"[PredictionService] {stock_code}历史数据不足: {len(history)}条，需要至少30条")
             return None
 
         prices = [h.close for h in history]

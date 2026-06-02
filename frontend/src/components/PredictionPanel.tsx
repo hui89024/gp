@@ -27,8 +27,10 @@ export default function PredictionPanel({ stockCode, stockName }: Props) {
     try {
       const response = await predictionApi.getSignal(stockCode);
       setSignal(response.data);
-    } catch (error) {
-      console.error('获取预测信号失败:', error);
+    } catch (error: any) {
+      const detail = error.response?.data?.detail || '获取预测信号失败';
+      console.error('获取预测信号失败:', detail);
+      message.warning(detail);
     } finally {
       setLoading(false);
     }
@@ -50,8 +52,10 @@ export default function PredictionPanel({ stockCode, stockName }: Props) {
       message.success('模型训练完成');
       await fetchSignal();
       await fetchPerformance();
-    } catch (error) {
-      message.error('模型训练失败');
+    } catch (error: any) {
+      const detail = error.response?.data?.detail || '模型训练失败';
+      console.error('模型训练失败:', detail);
+      message.error(detail);
     } finally {
       setTraining(false);
     }
