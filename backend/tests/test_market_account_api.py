@@ -1,18 +1,26 @@
+import os
+os.environ["DATABASE_URL"] = "sqlite:///./test_temp.db"
+
 import pytest
+from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.database import Base
-from app.main import app
-from app.api.deps import get_db
+from sqlalchemy.pool import StaticPool
+from app.database import Base, get_db
+from app.models.user import User
+from app.models.market_account import MarketAccount
+from app.api.auth import router as auth_router
+from app.api.market_accounts import router as market_accounts_router
 
 
 @pytest.fixture
 def client():
-    engine = create_engine("sqlite:///:memory:")
-    # Only create tables needed for this test to avoid JSONB issues with SQLite
-    from app.models.user import User
-    from app.models.market_account import MarketAccount
+    engine = create_engine(
+        "sqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
     User.__table__.create(engine, checkfirst=True)
     MarketAccount.__table__.create(engine, checkfirst=True)
     TestSessionLocal = sessionmaker(bind=engine)
@@ -24,8 +32,12 @@ def client():
         finally:
             db.close()
 
-    app.dependency_overrides[get_db] = override_get_db
-    with TestClient(app) as c:
+    test_app = FastAPI()
+    test_app.include_router(auth_router)
+    test_app.include_router(market_accounts_router)
+    test_app.dependency_overrides[get_db] = override_get_db
+
+    with TestClient(test_app) as c:
         yield c
 
 
