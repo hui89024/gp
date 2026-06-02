@@ -14,10 +14,11 @@ from app.models.broker_account import BrokerAccount
 from app.models.live_trade import LiveTrade
 from app.models.fundamental_data import FundamentalData
 from app.models.risk_control_record import RiskControlRecord
+from app.models.market_account import MarketAccount
 
 __all__ = [
     "User", "Position", "Trade", "Prediction", "Review", "StrategyPerformance",
     "StrategyConfig", "AutoTradeTask", "RiskConfig", "AutoTradeLog", "BacktestRecord",
     "CircuitBreakerEvent", "AlertRecord", "BrokerAccount", "LiveTrade",
-    "FundamentalData", "RiskControlRecord"
+    "FundamentalData", "RiskControlRecord", "MarketAccount"
 ]

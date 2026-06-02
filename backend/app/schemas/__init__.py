@@ -14,6 +14,13 @@ from app.schemas.auto_trading import (
     TradeSignal, RiskCheckResult,
     AutoTradingStatus, AutoTradingStatistics
 )
+from app.schemas.auth import (
+    UserRegister, UserLogin, UserResponse as AuthUserResponse,
+    TokenResponse, TokenRefresh
+)
+from app.schemas.market_account import (
+    MarketAccountCreate, MarketAccountUpdate, MarketAccountResponse, MarketAccountList
+)
 
 __all__ = [
     "UserCreate", "UserResponse", "AccountOverview",
@@ -27,5 +34,8 @@ __all__ = [
     "RiskConfigCreate", "RiskConfigUpdate", "RiskConfigResponse",
     "AutoTradeLogCreate", "AutoTradeLogResponse",
     "TradeSignal", "RiskCheckResult",
-    "AutoTradingStatus", "AutoTradingStatistics"
+    "AutoTradingStatus", "AutoTradingStatistics",
+    "UserRegister", "UserLogin", "AuthUserResponse",
+    "TokenResponse", "TokenRefresh",
+    "MarketAccountCreate", "MarketAccountUpdate", "MarketAccountResponse", "MarketAccountList"
 ]
