@@ -11,7 +11,8 @@ from app.schemas.auto_trading import (
     AutoTradeTaskCreate, AutoTradeTaskUpdate, AutoTradeTaskResponse,
     RiskConfigCreate, RiskConfigUpdate, RiskConfigResponse,
     AutoTradeLogCreate, AutoTradeLogResponse,
-    TradeSignal, RiskCheckResult
+    TradeSignal, RiskCheckResult,
+    AutoTradingStatus, AutoTradingStatistics
 )
 
 __all__ = [
@@ -25,5 +26,6 @@ __all__ = [
     "AutoTradeTaskCreate", "AutoTradeTaskUpdate", "AutoTradeTaskResponse",
     "RiskConfigCreate", "RiskConfigUpdate", "RiskConfigResponse",
     "AutoTradeLogCreate", "AutoTradeLogResponse",
-    "TradeSignal", "RiskCheckResult"
+    "TradeSignal", "RiskCheckResult",
+    "AutoTradingStatus", "AutoTradingStatistics"
 ]

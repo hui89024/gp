@@ -170,3 +170,24 @@ class RiskCheckResult(BaseModel):
     passed: bool
     reason: str = ""
     details: Dict[str, Any] = {}
+
+
+# AutoTrading Status Schema
+class AutoTradingStatus(BaseModel):
+    running: bool = False
+    active_tasks: int = 0
+    active_strategies: int = 0
+    today_trades: int = 0
+    today_pnl: float = 0.0
+
+
+# AutoTrading Statistics Schema
+class AutoTradingStatistics(BaseModel):
+    total_trades: int = 0
+    winning_trades: int = 0
+    losing_trades: int = 0
+    win_rate: float = 0.0
+    total_pnl: float = 0.0
+    avg_pnl_per_trade: float = 0.0
+    max_win: float = 0.0
+    max_loss: float = 0.0
