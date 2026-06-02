@@ -18,7 +18,8 @@
 |------|----------|------|
 | 前端框架 | React 18 + TypeScript | 类型安全，组件化 |
 | UI组件库 | Ant Design 5 | 企业级UI组件 |
-| 图表库 | ECharts 5 + TradingView | 专业金融图表 |
+| 图表库 | TradingView Lightweight Charts | 专业金融K线图表 |
+| 通用图表 | ECharts 5 | 统计图表（收益曲线、分布图等） |
 | 状态管理 | Zustand | 轻量级状态管理 |
 | 后端框架 | FastAPI | 高性能异步框架 |
 | ORM | SQLAlchemy 2.0 | 异步支持 |
@@ -33,8 +34,8 @@
 
 使用免费API获取股票数据：
 - AKShare：A股行情、财务数据
-- 港股数据接口
-- 美股数据接口
+- Yahoo Finance API：港股、美股行情数据
+- Alpha Vantage：美股历史数据（免费层限制：每分钟5次请求）
 
 ## 2. 系统架构
 
@@ -1377,15 +1378,123 @@ class RecommendationEngine:
 - 用户需求变更 → 迭代开发，快速响应
 - 市场异常情况 → 异常检测，自动暂停
 
-## 10. 后续扩展
+## 10. 系统迁移策略
 
-### 10.1 功能扩展
+### 10.1 现有系统分析
+
+**当前实现：**
+- 单一A股市场支持
+- 基础交易引擎（买入/卖出）
+- 简单账户管理
+- 基本持仓管理
+
+**迁移目标：**
+- 多市场支持（A股、港股、美股）
+- 高级订单类型
+- 完整的回测和分析系统
+- 交易心理分析
+
+### 10.2 迁移方案
+
+**阶段一：数据模型迁移（第1周）**
+```sql
+-- 1. 创建新表结构
+CREATE TABLE market_accounts_new ( ... );
+CREATE TABLE positions_new ( ... );
+CREATE TABLE orders_new ( ... );
+
+-- 2. 迁移现有数据
+INSERT INTO market_accounts_new (user_id, market, currency, initial_capital, current_capital)
+SELECT id, 'CN', 'CNY', initial_capital, current_capital FROM users;
+
+INSERT INTO positions_new (user_id, market, stock_code, stock_name, quantity, avg_cost, current_price, unrealized_pnl)
+SELECT user_id, 'CN', stock_code, stock_name, quantity, avg_cost, current_price, unrealized_pnl FROM positions;
+
+-- 3. 重命名表
+ALTER TABLE positions RENAME TO positions_old;
+ALTER TABLE positions_new RENAME TO positions;
+```
+
+**阶段二：API兼容层（第2周）**
+```python
+# 保持旧API兼容
+@router.post("/api/trades/buy")
+async def legacy_buy(order: LegacyBuyOrder):
+    """兼容旧版买入接口"""
+    new_order = OrderCreate(
+        market="CN",
+        stock_code=order.stock_code,
+        order_type="LIMIT",
+        direction="BUY",
+        price=order.price,
+        quantity=order.quantity
+    )
+    return await create_order(new_order)
+
+@router.post("/api/trades/sell")
+async def legacy_sell(order: LegacySellOrder):
+    """兼容旧版卖出接口"""
+    new_order = OrderCreate(
+        market="CN",
+        stock_code=order.stock_code,
+        order_type="LIMIT",
+        direction="SELL",
+        price=order.price,
+        quantity=order.quantity
+    )
+    return await create_order(new_order)
+```
+
+**阶段三：前端渐进升级（第3-4周）**
+- 保持现有页面功能
+- 逐步替换组件
+- 添加多市场切换
+- 集成新图表组件
+
+### 10.3 数据迁移验证
+
+**验证检查点：**
+```python
+class MigrationValidator:
+    """迁移验证器"""
+    
+    def validate(self):
+        checks = [
+            self._check_user_count(),
+            self._check_position_count(),
+            self._check_trade_count(),
+            self._check_capital_consistency(),
+            self._check_position_consistency(),
+        ]
+        
+        for check in checks:
+            if not check.passed:
+                raise MigrationError(f"验证失败: {check.message}")
+        
+        return True
+    
+    def _check_capital_consistency(self):
+        """验证资金一致性"""
+        old_total = self.db.query(func.sum(User.current_capital)).scalar()
+        new_total = self.db.query(func.sum(MarketAccount.current_capital)).filter(
+            MarketAccount.market == 'CN'
+        ).scalar()
+        
+        return CheckResult(
+            passed=abs(old_total - new_total) < 0.01,
+            message=f"资金总额: 旧={old_total}, 新={new_total}"
+        )
+```
+
+## 11. 后续扩展
+
+### 11.1 功能扩展
 - 社交交易功能
 - 排行榜和竞赛
 - 移动端原生应用
 - 多语言支持
 
-### 10.2 技术扩展
+### 11.2 技术扩展
 - 微服务架构演进
 - 实时数据流处理
 - 云端部署
