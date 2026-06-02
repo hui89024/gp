@@ -22,6 +22,9 @@ import type {
   AutoTradeLog,
   AutoTradingStatus,
   AutoTradingStatistics,
+  CircuitBreakerStatus,
+  CircuitBreakerEvent,
+  AlertRecord,
 } from '../types';
 
 const api = axios.create({
@@ -178,6 +181,27 @@ export const autoTradingApi = {
 
   getLogs: (userId: number, limit: number = 50) =>
     api.get<AutoTradeLog[]>('/auto-trading/logs', { params: { user_id: userId, limit } }),
+};
+
+// 风控API
+export const riskControlApi = {
+  getCircuitBreakerStatus: (userId: number) =>
+    api.get<CircuitBreakerStatus>('/risk-control/circuit-breaker/status', { params: { user_id: userId } }),
+
+  checkCircuitBreaker: (userId: number) =>
+    api.post<{ triggered: boolean; reason: string }>('/risk-control/circuit-breaker/check', null, { params: { user_id: userId } }),
+
+  resetCircuitBreaker: (userId: number) =>
+    api.post<{ message: string }>('/risk-control/circuit-breaker/reset', null, { params: { user_id: userId } }),
+
+  getCircuitBreakerEvents: (userId: number, limit: number = 20) =>
+    api.get<CircuitBreakerEvent[]>('/risk-control/circuit-breaker/events', { params: { user_id: userId, limit } }),
+
+  getAlertRecords: (userId: number, limit: number = 50) =>
+    api.get<AlertRecord[]>('/risk-control/alerts/records', { params: { user_id: userId, limit } }),
+
+  testAlert: (userId: number, channel: string = 'dingtalk') =>
+    api.post<{ message: string }>('/risk-control/alerts/test', null, { params: { user_id: userId, channel } }),
 };
 
 export default api;

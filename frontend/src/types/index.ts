@@ -231,3 +231,29 @@ export interface AutoTradingStatistics {
   max_win: number;
   max_loss: number;
 }
+
+// 风控相关类型
+export interface CircuitBreakerStatus {
+  is_triggered: boolean;
+  trigger_reason: string | null;
+}
+
+export interface CircuitBreakerEvent {
+  id: number;
+  user_id: number;
+  trigger_reason: string;
+  action_taken: string;
+  created_at: string;
+}
+
+export interface AlertRecord {
+  id: number;
+  user_id: number;
+  rule_name: string;
+  severity: string;
+  message: string;
+  channels: string[];
+  sent: boolean;
+  sent_at: string | null;
+  created_at: string;
+}
