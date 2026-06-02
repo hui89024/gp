@@ -11,9 +11,13 @@ from app.models.backtest_record import BacktestRecord
 from app.models.circuit_breaker_event import CircuitBreakerEvent
 from app.models.alert_record import AlertRecord
 from app.models.broker_account import BrokerAccount
+from app.models.live_trade import LiveTrade
+from app.models.fundamental_data import FundamentalData
+from app.models.risk_control_record import RiskControlRecord
 
 __all__ = [
     "User", "Position", "Trade", "Prediction", "Review", "StrategyPerformance",
     "StrategyConfig", "AutoTradeTask", "RiskConfig", "AutoTradeLog", "BacktestRecord",
-    "CircuitBreakerEvent", "AlertRecord", "BrokerAccount"
+    "CircuitBreakerEvent", "AlertRecord", "BrokerAccount", "LiveTrade",
+    "FundamentalData", "RiskControlRecord"
 ]
