@@ -32,6 +32,16 @@ print_error() {
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$SCRIPT_DIR"
 
+# 兼容 docker-compose / docker compose
+if command -v docker-compose &> /dev/null; then
+    COMPOSE="docker-compose"
+elif docker compose version &> /dev/null; then
+    COMPOSE="docker compose"
+else
+    print_error "未找到 docker-compose 或 docker compose"
+    exit 1
+fi
+
 echo ""
 echo "============================================================"
 echo "  股票交易系统 - 服务器自动部署"
@@ -46,18 +56,21 @@ if [ ! -d ".git" ]; then
 fi
 print_success "Git 仓库检查通过"
 
-# 2. 拉取最新代码
-print_info "拉取最新代码..."
-git fetch origin
-LOCAL=$(git rev-parse HEAD)
-REMOTE=$(git rev-parse @{u})
+# 2. 拉取最新代码（网络不通时跳过）
+print_info "检查代码更新..."
+if git fetch origin 2>/dev/null; then
+    LOCAL=$(git rev-parse HEAD)
+    REMOTE=$(git rev-parse @{u})
 
-if [ "$LOCAL" = "$REMOTE" ]; then
-    print_success "代码已是最新版本"
+    if [ "$LOCAL" = "$REMOTE" ]; then
+        print_success "代码已是最新版本"
+    else
+        print_info "发现新版本，正在更新..."
+        git pull origin master
+        print_success "代码更新完成"
+    fi
 else
-    print_info "发现新版本，正在更新..."
-    git pull origin master
-    print_success "代码更新完成"
+    print_warning "无法连接远程仓库，使用本地代码继续部署"
 fi
 
 # 3. 检查 docker-compose.yml 是否存在
@@ -68,12 +81,12 @@ fi
 
 # 4. 停止现有服务
 print_info "停止现有服务..."
-docker-compose down
+$COMPOSE down
 print_success "服务已停止"
 
 # 5. 重新构建并启动服务
 print_info "重新构建并启动服务..."
-docker-compose up -d --build
+$COMPOSE up -d --build
 print_success "服务构建完成"
 
 # 6. 等待服务启动
@@ -82,21 +95,21 @@ sleep 10
 
 # 7. 检查服务状态
 print_info "检查服务状态..."
-docker-compose ps
+$COMPOSE ps
 
 # 8. 检查服务健康状态
 echo ""
 print_info "检查服务健康状态..."
 
 # 检查 PostgreSQL
-if docker-compose exec -T postgres pg_isready -U postgres > /dev/null 2>&1; then
+if $COMPOSE exec -T postgres pg_isready -U postgres > /dev/null 2>&1; then
     print_success "PostgreSQL 服务正常"
 else
     print_warning "PostgreSQL 服务可能还在启动中..."
 fi
 
 # 检查 Redis
-if docker-compose exec -T redis redis-cli ping > /dev/null 2>&1; then
+if $COMPOSE exec -T redis redis-cli ping > /dev/null 2>&1; then
     print_success "Redis 服务正常"
 else
     print_warning "Redis 服务可能还在启动中..."
@@ -138,7 +151,7 @@ echo "  API 文档地址:"
 echo "     http://$(hostname -I | awk '{print $1}'):8000/docs"
 echo ""
 echo "  查看日志:"
-echo "     docker-compose logs -f"
+echo "     $COMPOSE logs -f"
 echo ""
 echo "============================================================"
 echo ""
