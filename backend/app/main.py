@@ -4,7 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api import (
     account_router, trade_router, stock_router,
     prediction_router, review_router, auto_trading_router,
-    backtest_router, risk_control_router
+    backtest_router, risk_control_router, auth_router,
+    broker_router, live_trade_router, fundamental_router
 )
 from app.database import engine, Base
 
@@ -35,6 +36,10 @@ app.include_router(review_router)
 app.include_router(auto_trading_router)
 app.include_router(backtest_router)
 app.include_router(risk_control_router)
+app.include_router(auth_router)
+app.include_router(broker_router)
+app.include_router(live_trade_router)
+app.include_router(fundamental_router)
 
 
 @app.get("/")
