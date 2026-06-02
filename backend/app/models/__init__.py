@@ -9,9 +9,10 @@ from app.models.risk_config import RiskConfig
 from app.models.auto_trade_log import AutoTradeLog
 from app.models.backtest_record import BacktestRecord
 from app.models.circuit_breaker_event import CircuitBreakerEvent
+from app.models.alert_record import AlertRecord
 
 __all__ = [
     "User", "Position", "Trade", "Prediction", "Review", "StrategyPerformance",
     "StrategyConfig", "AutoTradeTask", "RiskConfig", "AutoTradeLog", "BacktestRecord",
-    "CircuitBreakerEvent"
+    "CircuitBreakerEvent", "AlertRecord"
 ]
