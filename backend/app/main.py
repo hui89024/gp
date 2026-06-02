@@ -3,7 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import (
     account_router, trade_router, stock_router,
-    prediction_router, review_router, auto_trading_router
+    prediction_router, review_router, auto_trading_router,
+    backtest_router
 )
 from app.database import engine, Base
 
@@ -32,6 +33,7 @@ app.include_router(stock_router)
 app.include_router(prediction_router)
 app.include_router(review_router)
 app.include_router(auto_trading_router)
+app.include_router(backtest_router)
 
 
 @app.get("/")

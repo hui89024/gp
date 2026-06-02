@@ -7,8 +7,9 @@ from app.models.strategy_config import StrategyConfig
 from app.models.auto_trade_task import AutoTradeTask
 from app.models.risk_config import RiskConfig
 from app.models.auto_trade_log import AutoTradeLog
+from app.models.backtest_record import BacktestRecord
 
 __all__ = [
     "User", "Position", "Trade", "Prediction", "Review", "StrategyPerformance",
-    "StrategyConfig", "AutoTradeTask", "RiskConfig", "AutoTradeLog"
+    "StrategyConfig", "AutoTradeTask", "RiskConfig", "AutoTradeLog", "BacktestRecord"
 ]
